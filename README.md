@@ -34,7 +34,7 @@ Java-Spring-gRPC/
 │   │   └── proto/ 
 │   │       └── greeting.proto 
 │   └── resources/ 
-│   └── application.yml 
+│       └── application.yml 
 ├── pom.xml 
 ├── LICENSE 
 └── README.md
