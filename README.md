@@ -14,6 +14,7 @@ This repository showcases a **Java-based gRPC server** built with **Spring Boot*
 - 🧩 **Spring Boot Integration:** Simplifies configuration and dependency injection.
 - 🔍 **Reflection Enabled:** Server supports gRPC reflection for easy introspection and debugging.
 - 🔄 **Bidirectional Communication Ready:** Base for implementing unary, server-streaming, client-streaming, and bidirectional gRPC methods.
+- 🛒 **Multiple Services:** Includes both GreetingService and OrderService implementations.
 
 ---
 
@@ -30,9 +31,12 @@ Java-Spring-gRPC/
 │   │   │   ├── config/ 
 │   │   │   │   └── GrpcServerConfig.java  
 │   │   │   └── services/ 
-│   │   │       └── GreetingServiceImpl.java  
+│   │   │       ├── GreetingServiceImpl.java
+│   │   │       ├── OrderServiceImpl.java
+│   │   │       └── OrderStatusResponse.java  
 │   │   └── proto/ 
-│   │       └── greeting.proto 
+│   │       ├── greeting.proto
+│   │       └── order.proto
 │   └── resources/ 
 │   └── application.yml 
 ├── pom.xml 
@@ -47,26 +51,28 @@ Java-Spring-gRPC/
 
 ### 1. Clone the Repository
 
-    ```bash
-    git clone https://github.com/MrDay2Day/grpc-server-java.git
-    cd grpc-server-java
-    ```
+```bash
+git clone https://github.com/MrDay2Day/grpc-server-java.git
+cd grpc-server-java
+```
 
 ### 2. Build the Project
 Ensure you have Maven installed. You can build the project using the following command:Make sure you have Java 21 and Maven 3.8+ installed.
 
-   ```bash
-    mvn clean install
-   ```
+```bash
+mvn clean install
+```
 
 ### 3. Run the gRPC Server
 
-   ```bash
-   mvn spring-boot:run
-   ```
+```bash
+mvn spring-boot:run
+```
 The server will start on the default port: `3031`
 
-## 📜 Protobuf Definition
+## 📜 Protobuf Definitions
+
+### Greeting Service
 `greeting.proto` defines the `GreetingService`:
 
 ```protobuf
@@ -86,6 +92,46 @@ message HelloRequest {
 
 message HelloResponse {
   string message = 1;
+}
+```
+
+### Order Service
+`order.proto` defines the `OrderService`:
+
+```protobuf
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc";
+option java_outer_classname = "OrderProto";
+
+package order;
+
+service OrderService {
+  rpc getOrder (getOrderRequest) returns (getOrderResponse) {}
+  rpc getOrderStatus (orderStatusRequest) returns (orderStatusResponse) {}
+}
+
+message getOrderRequest {
+  string productName = 1;
+  int32 productId = 2;
+  string productDescription = 3;
+  int32 units = 4;
+  double unitCost = 5;
+}
+
+message getOrderResponse {
+  int32 orderId = 1;
+  double total = 2;
+  string status = 3;
+}
+
+message orderStatusRequest {
+  int32 orderId = 1;
+}
+
+message orderStatusResponse {
+  string status = 1;
 }
 ```
 
@@ -114,7 +160,8 @@ grpcurl -plaintext localhost:3031 list
 ```
 
 ## 🧪 Testing the gRPC Server
-To test the server:
+
+### Testing GreetingService
 
 ```bash
 grpcurl -plaintext -d '{"name": "Day2Day"}' localhost:3031 com.example.grpc.GreetingService/sayHello
@@ -124,6 +171,34 @@ Expected Response:
 ```json
 {
   "message": "Hello, Day2Day!"
+}
+```
+
+### Testing OrderService
+
+#### Get Order
+```bash
+grpcurl -plaintext -d '{"productId": 123, "productName": "Widget", "productDescription": "A premium widget", "units": 5, "unitCost": 19.99}' localhost:3031 order.OrderService/getOrder
+```
+
+Expected Response:
+```json
+{
+  "orderId": 100000001,
+  "total": 229.885,
+  "status": "PENDING"
+}
+```
+
+#### Get Order Status
+```bash
+grpcurl -plaintext -d '{"orderId": 100000001}' localhost:3031 order.OrderService/getOrderStatus
+```
+
+Expected Response:
+```json
+{
+  "status": "SHIPPED"
 }
 ```
 
@@ -144,10 +219,11 @@ Dependencies are centrally managed in `pom.xml`, with specific versions pulled i
 ##  ✅ Skills Demonstrated
 - ⚙️ Setting up a gRPC server with Spring Boot
 - 📄 Writing and compiling Protocol Buffers with Maven
-- 🧠 Understanding gRPC service design patterns (Unary RPC in this case)
+- 🧠 Understanding gRPC service design patterns (Unary RPC)
 - 🧩 Integrating Protobuf-generated code into business logic
 - 🧪 Using testing/debugging tools like grpcurl with reflection
 - 📦 Clean dependency management using Maven
+- 🔄 Implementing multiple gRPC services in a single server
 
 ## 📌 Future Enhancements
 - ✅ Add support for streaming RPCs
@@ -158,6 +234,3 @@ Dependencies are centrally managed in `pom.xml`, with specific versions pulled i
 
 ## 📄 License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-```
-
-
