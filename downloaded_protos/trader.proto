@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package trader;
+
+import "google/protobuf/timestamp.proto";
+
+option java_package = "d2d.trader.grpc";
+option java_outer_classname = "TraderProto";
+option java_multiple_files = true;
+
+message getTraderRequest {
+  string symbol = 1;
+  string side = 2;
+  int64 timestamp = 3;
+  double price = 4;
+  double amount = 5;
+}
+
+message getTraderResponse {
+  string symbol = 1;
+  string side = 2;
+  int64 timestamp = 3;
+  double price = 4;
+  double amount = 5;
+  bool execute = 6;
+  .google.protobuf.Timestamp processed_date_time = 7;
+}
+
+service TraderService {
+  rpc processTrade (.trader.getTraderRequest) returns (.trader.getTraderResponse);
+}
+
