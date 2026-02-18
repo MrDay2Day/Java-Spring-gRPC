@@ -2,6 +2,7 @@ package code.config;
 
 import code.services.GreetingServiceImpl;
 import code.services.OrderServiceImpl;
+import code.services.TraderServiceImpl;
 import io.grpc.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +24,11 @@ public class GrpcServerConfig {
     private Server server;
 
     @Bean(initMethod = "start")
-    public Server grpcServer(GreetingServiceImpl greetingService, OrderServiceImpl orderService) throws IOException {
+    public Server grpcServer(GreetingServiceImpl greetingService, OrderServiceImpl orderService, TraderServiceImpl traderService) throws IOException {
         server = NettyServerBuilder.forPort(grpcPort)
                 .addService(greetingService)
                 .addService(orderService)
+                .addService(traderService)
                 .addService(ProtoReflectionService.newInstance())
                 .build();
 

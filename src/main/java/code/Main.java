@@ -10,7 +10,7 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        System.out.println("Spring Boot gRPC Server");
+        logger.info("Spring Boot gRPC Server");
         SpringApplication.run(Main.class, args);
         logger.info("Spring Boot application started");
     }
