@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import io.grpc.protobuf.services.ProtoReflectionService;
